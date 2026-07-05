@@ -1,0 +1,63 @@
+config:
+
+  target: "https://api.publicapis.org"
+
+  phases:
+
+    - duration: 60
+
+      arrivalRate: 5
+
+      name: "Ramp up load test"
+
+  payload:
+
+    path: "users.csv"
+
+    fields:
+
+      - name
+
+      - category
+
+  defaults:
+
+    headers:
+
+      Content-Type: "application/json"
+
+scenarios:
+
+  - name: "Public APIs load scenario"
+
+    flow:
+
+      - get:
+
+          url: "/entries"
+
+          expect:
+
+            - statusCode: 200
+
+      - post:
+
+          url: "/entries"
+
+          json:
+
+            name: "{{ name }}"
+
+            category: "{{ category }}"
+
+          expect:
+
+            - statusCode: 200
+
+      - get:
+
+          url: "/entries?category={{ category }}"
+
+          expect:
+
+            - statusCode: 200
